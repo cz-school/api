@@ -108,4 +108,10 @@ router.get('/getUserLists', (req, res) => {
         res.json(data)
     })
 })
+router.get("/zzc",(req,res)=>{
+    res.json({
+        code:"222",
+        masg:"dsa"
+    })
+})
 module.exports = router;
