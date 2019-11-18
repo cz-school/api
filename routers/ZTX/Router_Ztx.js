@@ -2,8 +2,14 @@ const express = require("express")
 const router = express.Router()
 const db = require("../../db")
 router.get("/getUserList", (req, res) => {
-    let stre = []
-    let sql = `select id,username,childs from user_list ORDER BY username`
+    let stre = [{
+        name: "列表管理",
+        childs: [{
+            names: "管理列表",
+            router: "/userList"
+        }]
+    }]
+    let sql = `select * from user_list ORDER BY username`
     db.query(sql, (err, data) => {
         data.forEach(v => {
             let name = v.username;
@@ -16,7 +22,8 @@ router.get("/getUserList", (req, res) => {
                     // console.log(x);
                     obj["childs"].push({
                         id: x.id,
-                        names: x.childs
+                        names: x.childs,
+                        router: x.router
                     })
                 }
             })
@@ -44,8 +51,9 @@ router.get('/getUserList/:id', (req, res) => {
 router.post("/getUserList", (req, res) => {
     let username = req.body.username;
     let childs = req.body.childs;
+    let router = req.body.router;
     let sql = `insert into user_list set ?`;
-    db.query(sql, { username, childs }, (err, data) => {
+    db.query(sql, { username, childs, router }, (err, data) => {
         if (err) {
             res.json({
                 code: "400",
@@ -92,6 +100,12 @@ router.delete("/getUserList/:id", (req, res) => {
                 msg: '成功'
             })
         }
+    })
+})
+router.get('/getUserLists', (req, res) => {
+    let sql = `select * from user_list`;
+    db.query(sql, (er, data) => {
+        res.json(data)
     })
 })
 module.exports = router;
