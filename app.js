@@ -17,16 +17,17 @@ app.use(bodyParser.urlencoded({
 // 允许接口 application/json 格式的数据
 app.use(bodyParser.json())
 
-
-app.use(server.prefix, require("./routers/Router_Bjw"));
-app.use(server.prefix, require("./routers/Router_Cmx"));
-app.use(server.prefix, require("./routers/Router_Gh"));
-app.use(server.prefix, require("./routers/Router_Lyf"));
-app.use(server.prefix, require("./routers/Router_Swb"));
-app.use(server.prefix, require("./routers/Router_Whl"));
-app.use(server.prefix, require("./routers/Router_Xkb"));
-app.use(server.prefix, require("./routers/Router_Zct"));
-app.use(server.prefix, require("./routers/Router_Ztx"));
+app.use(server.prefix, require("./routers/BJW/Router_Bjw"));
+app.use(server.prefix, require("./routers/CMX/Router_Cmx"));
+app.use(server.prefix, require("./routers/GH/Router_Gh"));
+app.use(server.prefix, require("./routers/LYF/Router_Lyf"));
+app.use(server.prefix, require("./routers/SWB/Router_Swb"));
+app.use(server.prefix, require("./routers/WHL/Router_Whl"));
+app.use(server.prefix, require("./routers/XKB/Router_Xkb"));
+app.use(server.prefix, require("./routers/ZCT/Router_Zct"));
+app.use(server.prefix, require("./routers/ZTX/Router_Ztx"));
+// 公共部位
+app.use(server.prefix, require("./routers/common/index"))
 app.listen(server.port, () => {
-    console.log(`Server run in http://127.0.0.1:${server.port}`);
+    console.log(`Server run in http://127.0.0.1:${server.port}/api/v1`);
 })
