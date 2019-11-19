@@ -30,6 +30,8 @@ app.use(server.prefix, require("./routers/ZTX/Router_Ztx"));
 // #region 食堂购物车路由
     // 购物车
     app.use(server.prefix, require("./routers/ZCT/myCart_Zct"))
+    // 显示订单
+    app.use(server.prefix, require("./routers/ZCT/order"))
 // #endregion
 // 公共部位
 app.use(server.prefix, require("./routers/common/index"))
