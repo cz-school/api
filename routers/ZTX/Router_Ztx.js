@@ -111,7 +111,7 @@ router.get('/getUserLists', (req, res) => {
         res.json(data)
     })
 })
-router.post("/login", (req, res) => {
+router.post("/BeLogin", (req, res) => {
     let username = req.body.username;
     let password = req.body.password;
     let sql = `select * from users where username = ? and password = ?`;
