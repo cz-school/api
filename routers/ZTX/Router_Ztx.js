@@ -1,6 +1,9 @@
 const express = require("express")
 const router = express.Router()
 const db = require("../../db")
+const config = require("../../config")
+const md5 = require("md5")
+const jsonwebtoken = require('jsonwebtoken')
 router.get("/getUserList", (req, res) => {
     let stre = [{
         name: "列表管理",
@@ -108,10 +111,33 @@ router.get('/getUserLists', (req, res) => {
         res.json(data)
     })
 })
-router.get("/zzc",(req,res)=>{
-    res.json({
-        code:"222",
-        masg:"dsa"
+router.post("/login", (req, res) => {
+    let username = req.body.username;
+    let password = req.body.password;
+    let sql = `select * from users where username = ? and password = ?`;
+    db.query(sql, [username, md5(password + config.key)], (err, data) => {
+        if (err) {
+            res.json({
+                code: "400",
+                msg: "服务器错误" + err
+            })
+            return
+        }
+        if (data.length == 0) {
+            res.json({
+                code: "400",
+                msg: "登录失败"
+            })
+            return
+        }
+        let token = jsonwebtoken.sign({
+            id: data[0].id        
+        }, config.key, { expiresIn: 60 * 60 * 24 * 30 * 6 })
+        res.json({
+            code: "200",
+            msg: "成功",
+            token
+        })
     })
 })
 module.exports = router;
