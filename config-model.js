@@ -9,5 +9,6 @@ module.exports = {
         user: '',
         password: '',
         database: '',
-    }
+    },
+    key:"asdfghjkl!@#$"
 }
