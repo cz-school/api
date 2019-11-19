@@ -26,6 +26,11 @@ app.use(server.prefix, require("./routers/WHL/Router_Whl"));
 app.use(server.prefix, require("./routers/XKB/Router_Xkb"));
 app.use(server.prefix, require("./routers/ZCT/Router_Zct"));
 app.use(server.prefix, require("./routers/ZTX/Router_Ztx"));
+
+// #region 食堂购物车路由
+    // 购物车
+    app.use(server.prefix, require("./routers/ZCT/myCart_Zct"))
+// #endregion
 // 公共部位
 app.use(server.prefix, require("./routers/common/index"))
 app.listen(server.port, () => {
