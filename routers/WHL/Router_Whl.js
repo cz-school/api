@@ -264,7 +264,7 @@ router.get('/list_st', (req, res) => {
     ${groupBy} 
     ${order} 
     ${limit}`;
-    // console.log(sql)
+    console.log(sql)
     conn.query(sql, (error, data) => {
         if (error) {
             res.json({
@@ -402,9 +402,9 @@ router.get('/list_st/:id', (req, res) => {
 // 获取到 通过win 商铺用户id
 router.get('/stusers_id', (req, res) => {
     let win_id = req.query.win_id;
-    let where = `where win_id = ${win_id}`
+    let where = `where win_id = ${win_id} and a.win_id = b.id`
     let limit = ` limit 0,1`
-    let sql = `SELECT user_id as stuser_id FROM win_menu ${where} ${limit}`;
+    let sql = `SELECT user_id as stuser_id , win_name FROM win_menu a ,win b  ${where} ${limit}`;
     conn.query(sql, [win_id], (error, data) => {
         if (error) {
             res.json({
@@ -446,7 +446,6 @@ router.post('/add_care', (req, res) => {
     let menu_id = req.body.menu_id;
     let stuser_id = req.body.stusersid;
     let menu_check = true;
-    console.log(req.body);
 
     // 发起请求查看是否有菜品
     conn.query(`select * from stcare where user_id = ${user_id} and menu_id = ${menu_id}`, (error, data) => {
