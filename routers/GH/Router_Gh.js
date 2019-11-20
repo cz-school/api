@@ -18,7 +18,6 @@ router.post('/purchase/:id', (req, res) => {
             })
         }
     })
-
 })
 // 渲染默认购买宝贝地址
 router.post('/purchaseSite', (req, res) => {
