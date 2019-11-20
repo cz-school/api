@@ -9,6 +9,7 @@ module.exports = {
         user: '',
         password: '',
         database: '',
+        multipleStatements:true
     },
     key:"asdfghjkl!@#$"
 }

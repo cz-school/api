@@ -18,7 +18,6 @@ router.post('/purchase/:id', (req, res) => {
             })
         }
     })
-
 })
 // 渲染默认购买宝贝地址
 router.post('/purchaseSite', (req, res) => {
@@ -97,7 +96,6 @@ router.post('/payment', (req, res) => {
         let shop_price = data[0][0].shop_price
         // 账户余额
         let userPrice = data[1][0].price
-        // console.log(shop_price,userPrice)
         // 账户余额大于等于商品金额才可以购买
         if (userPrice >= shop_price) {
             // 修改账户余额并修改商品的状态

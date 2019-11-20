@@ -132,13 +132,16 @@ const WebSocket = require('ws');// 导入WebSocket模块:
 const WebSocketServer = WebSocket.Server;// 引用Server类:
 const wss = new WebSocketServer({ port: 3101 });// 实例化: 端口3000
 wss.on('connection', function (ws) {
-  // console.log('client connected');
+  console.log('client connected');
   // 接收客户端数据
   ws.on('message', async (message) => {
-    console.log(message); //我是前台数据
+    // console.log(message); //我是前台数据
     // ws.send('你好啊')
     // 获取用户聊天消息列表
-    user_id = JSON.parse(message).user_id
+    if (JSON.parse(message).user_id !== undefined) {
+      var user_id = ''
+      user_id = JSON.parse(message).user_id
+    }
     // 判断user_id 是否存在
     if (user_id !== undefined) {
       // 判断发送者
@@ -192,27 +195,100 @@ wss.on('connection', function (ws) {
         })
       })
     }
-    // 房间号id
-    let room_id = ''
-    // 获取房间id
-    room_id = JSON.parse(message).room_id
-    console.log(room_id)
-    if (room_id !== undefined) {
+    if (JSON.parse(message).room_id !== undefined) {
+      // 房间号id
+      var room_id = ''
+      // 获取房间id
+      room_id = JSON.parse(message).room_id
+    }
+    function getRoom(id) {
       let sql = `select * from commit where room_id = ?`
-      db.query(sql, room_id, (err, data) => {
+      db.query(sql, id, (err, data) => {
         if (err) {
           console.log(err)
           return
         }
-        console.log(data)
+        // console.log(data)
         let idArr = []
         let info = []
-        data.forEach((v, i) => { 
-          
+        data.forEach((v, i) => {
+          if (v.req_id == room_id) {
+            idArr.push(v.req_id)
+            info.push({
+              'user_id': v.req_id,
+              'add_time': v.add_time,
+              'message': v.message
+            })
+          } else {
+            idArr.push(v.req_id)
+            info.push({
+              'user_id': v.req_id,
+              'add_time': v.add_time,
+              'message': v.message
+            })
+          }
         })
-        ws.send(JSON.stringify(data))
+        // console.log(idArr)
+        // console.log(info)
+        db.query(`select id,username,head_img from users where id in (?)`, [idArr], (err, data) => {
+          if (err) {
+            console.log(err)
+            return
+          }
+          // 王海龙
+          let datalist = [];
+          info.forEach((item) => {
+            data.forEach((item1) => {
+              if (item1.id == item.user_id) {
+                datalist.push({
+                  id: item1.id,
+                  username: item1.username,
+                  head_img: item1.head_img,
+                  add_time: item.add_time,
+                  message: item.message
+                })
+              }
+            })
+          })
+          data = datalist
+          // console.log(data);
+          data.forEach((v, i) => {
+            if (v.id == info[i].user_id) {
+              v['add_time'] = info[i].add_time
+              v['message'] = info[i].message
+            }
+          })
+          // console.log(data)
+          ws.send(JSON.stringify(data))
+        })
       })
     }
+    // console.log(room_id) 房间信息
+    if (room_id !== undefined) {
+      getRoom(room_id)
+    }
+    // 发送消息
+    if (JSON.parse(message).reqInfo != undefined) {
+      var reqInfo = {}
+      reqInfo = JSON.parse(message).reqInfo
+      let time = parseInt(new Date().getTime() / 1000)
+      reqInfo.add_time = time
+      // console.log(reqInfo)
+      let sql = `insert into commit value(?,?,?,?,?,?)`
+      let info = [null, reqInfo.req_id, reqInfo.res_id, reqInfo.message, reqInfo.add_time, reqInfo.room_id]
+      db.query(sql, info, (err, data) => {
+        if (err) {
+          console.log(err)
+          return
+        }
+        // console.log(data)
+        if (data.affectedRows === 1) {
+          getRoom(reqInfo.room_id)
+          return
+        }
+      })
+    }
+
   });
 })
 
