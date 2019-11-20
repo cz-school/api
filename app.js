@@ -34,5 +34,5 @@ app.use(server.prefix, require("./routers/ZTX/Router_Ztx"));
 // 公共部位
 app.use(server.prefix, require("./routers/common/index"))
 app.listen(server.port, () => {
-    console.log(`Server run in http://127.0.0.1:${server.port}/api/v1`);
+    console.log(`Server run in http:/127.0.0.1:${server.port}/api/v1`);
 })
