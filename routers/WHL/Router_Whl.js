@@ -517,8 +517,46 @@ router.post('/add_care', (req, res) => {
                 })
         }
     })
+})
 
-
+// 获取到购物车中的数量
+router.get('/care_st', (req, res) => {
+    let user_id = req.query.user_id;
+    let where = `where user_id = ${user_id}`
+   
+    let sql = `SELECT count(*) as care_num FROM stcare ${where}`;
+    conn.query(sql, (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        if (data.length === 0) {
+            res.json({
+                "ok": 0,
+                state: {
+                    code: "400",
+                    msg: "没有该条件的数据",
+                },
+                data: data
+            })
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "获取到购物车中的数量成功",
+                },
+                data: data
+            })
+        }
+    })
 })
 
 
