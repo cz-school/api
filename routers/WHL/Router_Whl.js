@@ -264,7 +264,7 @@ router.get('/list_st', (req, res) => {
     ${groupBy} 
     ${order} 
     ${limit}`;
-    console.log(sql)
+    // console.log(sql)
     conn.query(sql, (error, data) => {
         if (error) {
             res.json({
