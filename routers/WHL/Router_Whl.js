@@ -503,7 +503,7 @@ router.post('/add_care', (req, res) => {
                             }
                         })
                         return console.log(error2);
-                    }else{
+                    } else {
                         res.json({
                             "ok": 1,
                             state: {
@@ -522,7 +522,7 @@ router.post('/add_care', (req, res) => {
 router.get('/care_st', (req, res) => {
     let user_id = req.query.user_id;
     let where = `where user_id = ${user_id}`
-   
+
     let sql = `SELECT count(*) as care_num FROM stcare ${where}`;
     conn.query(sql, (error, data) => {
         if (error) {
@@ -558,5 +558,404 @@ router.get('/care_st', (req, res) => {
     })
 })
 
+
+
+
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+// 后台管理系统
+
+// 获取到窗口的数据后台
+router.get('/win_st_ht', (req, res) => {
+    let pagesize = req.query.pagesize || 10;
+    let pagenum = req.query.pagenum || 1;
+    let pageindex = (pagenum - 1) * pagesize;
+
+    let query = req.query.query || "";
+
+    // 获取到窗口的名称
+    let win_name = req.query.win_name || " ";
+    // 获取到窗口开放的时间
+    let win_start = req.query.win_start || " ";
+    // 获取到窗口结束时间
+    let win_end = req.query.win_end || " ";
+
+    let where = ` WHERE  1  `;
+    if (win_name !== " ") {
+        where = where + ` AND win_name =${win_name} `;
+    }
+    if (win_start !== " ") {
+        where = where + ` AND win_start <${win_start} `;
+    }
+    if (win_end !== " ") {
+        where = where + ` AND win_end >${win_end} `;
+    }
+    if (query !== " ") {
+        where = where + ` AND win_name like '%${query}%' `;
+    }
+    let order = `order by id desc `
+    let limit = ` limit ${pageindex}, ${pagesize} `;
+
+    let sql = `select count(*) as total  from win; select * from win ${where} ${order} ${limit}`;
+    conn.query(sql, (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        if (data.length === 0) {
+            res.json({
+                "ok": 0,
+                state: {
+                    code: "400",
+                    msg: "没有该条件的数据",
+                },
+                data: data
+            })
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "获取窗口成功",
+                },
+                data: data
+            })
+        }
+    })
+})
+// 通过id获取到窗口数据
+router.get('/win_st_ht/:id(\\d+)', (req, res) => {
+    let id = req.params.id;
+    let sql = `select * from win where id = ?`;
+    conn.query(sql, [id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        if (data.length === 0) {
+            res.json({
+                "ok": 0,
+                state: {
+                    code: "400",
+                    msg: "没有该条件的数据",
+                },
+                data: data
+            })
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "通过id获取窗口成功",
+                },
+                data: data
+            })
+        }
+    })
+})
+// 添加窗口的数据
+router.post("/win_st_ht", (req, res) => {
+    let result = {
+        win_name: req.body.win_name,
+        users_id: req.body.users_id,
+        win_inter: req.body.win_inter || null,
+        win_start: req.body.win_start || null,
+        win_end: req.body.win_end || null
+    }
+    let sql = `insert into win set ?`;
+    conn.query(sql, result, (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "添加窗口数据成功",
+                }
+            })
+        }
+    })
+
+})
+// 删除窗口的数据
+router.delete('/win_st_ht/:id(\\d+)', (req, res) => {
+    let id = req.params.id;
+    let sql = `delete from win where id =? ;`;
+    conn.query(sql, [id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "删除数据成功",
+                }
+            })
+        }
+    })
+})
+// 修改窗口数据
+router.put('/win_st_ht/:id(\\d+)', (req, res) => {
+
+    let id = req.params.id;
+    let resulte = {
+        win_name: req.body.win_name,
+        users_id: req.body.users_id,
+        win_inter: req.body.win_inter,
+        win_start: req.body.win_start,
+        win_end: req.body.win_end,
+    }
+    let sql = `update win set ? where id =? ;`;
+    conn.query(sql, [resulte, id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "修改数据成功",
+                }
+            })
+        }
+    })
+})
+
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+
+
+// 获取到菜品分类
+router.get('/classify_st_ht', (req, res) => {
+    let pagesize = req.query.pagesize || 10;
+    let pagenum = req.query.pagenum || 1;
+    let pageindex = (pagenum - 1) * pagesize;
+
+    let query = req.query.query || " ";
+
+    let where = ` WHERE  1  `;
+
+    if (query !== " ") {
+        where = where + ` AND name like '%${query}%' `;
+    }
+    let order = `order by id asc `
+    let limit = ` limit ${pageindex}, ${pagesize} `;
+
+    let sql = `select count(*) as total  from stclassify; select * from stclassify ${where} ${order} ${limit}`;
+    conn.query(sql, (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        if (data.length === 0) {
+            res.json({
+                "ok": 0,
+                state: {
+                    code: "400",
+                    msg: "没有该条件的数据",
+                },
+                data: data
+            })
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "获取分类数据成功",
+                },
+                data: data
+            })
+        }
+    })
+})
+// 通过id获取到菜品分类
+router.get('/classify_st_ht/:id(\\d+)', (req, res) => {
+    let id = req.params.id;
+    let sql = `select * from stclassify where id = ?`;
+    conn.query(sql, [id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        if (data.length === 0) {
+            res.json({
+                "ok": 0,
+                state: {
+                    code: "400",
+                    msg: "没有该条件的数据",
+                },
+                data: data
+            })
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "通过id获取菜品分类",
+                },
+                data: data
+            })
+        }
+    })
+})
+// 添加菜品分类
+router.post("/classify_st_ht", (req, res) => {
+    let result = {
+        name: req.body.name,
+    }
+    let sql = `insert into stclassify set ?`;
+    conn.query(sql, result, (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "添加窗口数据成功",
+                }
+            })
+        }
+    })
+
+})
+// 删除菜品分类
+router.delete('/classify_st_ht/:id(\\d+)', (req, res) => {
+    let id = req.params.id;
+    let sql = `delete from stclassify where id =? ;`;
+    conn.query(sql, [id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "删除数据成功",
+                }
+            })
+        }
+    })
+})
+// 修改菜品分类
+router.put('/classify_st_ht/:id(\\d+)', (req, res) => {
+    let id = req.params.id;
+    let resulte = {
+        name: req.body.name,
+    }
+    let sql = `update stclassify set ? where id = ? ;`;
+    conn.query(sql, [resulte, id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "修改菜品分类成功",
+                }
+            })
+        }
+    })
+})
 
 module.exports = router;

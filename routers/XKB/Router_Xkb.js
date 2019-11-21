@@ -24,6 +24,27 @@ router.get('/siteAll', (req, res) => {
     })
 })
 
+// 用户的默认收货地址
+router.get('/siteDefault', (req, res) => {
+    // 获取用户id 默认为1
+    let id = req.query.id || 1
+    conn.query('select * from address where users_id = ? and sdefault = 1', id, (error, data) => {
+        if (error) {
+            res.json({
+                'ok': 0,
+                'error': error
+            })
+            return
+        } else {
+            res.json({
+                'ok': 1,
+                'data': data
+            })
+        }
+    })
+})
+
+
 // 添加用户地址
 router.post('/addSite', (req, res) => {
     // 获取添加的数据
