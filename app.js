@@ -26,7 +26,7 @@ app.use(server.prefix, require("./routers/WHL/Router_Whl"));
 app.use(server.prefix, require("./routers/XKB/Router_Xkb"));
 app.use(server.prefix, require("./routers/ZCT/Router_Zct"));
 app.use(server.prefix, require("./routers/ZTX/Router_Ztx"));
-app.use(server.prefix, require("./routers/ZTX/Router_xkb"))
+// app.use(server.prefix, require("./routers/ZTX/Router_xkb"))
 
 // #region 食堂购物车路由
     // 购物车
