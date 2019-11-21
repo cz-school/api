@@ -97,6 +97,7 @@ router.post('/payment', (req, res) => {
         // 账户余额
         let userPrice = data[1][0].price
         // 账户余额大于等于商品金额才可以购买
+        // console.log(shop_price,userPrice)
         if (userPrice >= shop_price) {
             // 修改账户余额并修改商品的状态
             conn.query(`update users set price=${userPrice-shop_price} where id=${userid};update shop set buys = 1 where id= ${commodityId}`, (error, data) => {
