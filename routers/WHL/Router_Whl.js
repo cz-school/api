@@ -646,7 +646,7 @@ router.get('/win_st_ht', (req, res) => {
 router.get('/win_st_ht/:id(\\d+)', (req, res) => {
     let id = req.params.id;
     let sql = `select * from win where id = ?`;
-    conn.query(sql,[id], (error, data) => {
+    conn.query(sql, [id], (error, data) => {
         if (error) {
             res.json({
                 ok: "0",
@@ -717,7 +717,7 @@ router.post("/win_st_ht", (req, res) => {
 router.delete('/win_st_ht/:id(\\d+)', (req, res) => {
     let id = req.params.id;
     let sql = `delete from win where id =? ;`;
-    conn.query(sql , [id] , (error, data) => {
+    conn.query(sql, [id], (error, data) => {
         if (error) {
             res.json({
                 ok: "0",
@@ -728,7 +728,7 @@ router.delete('/win_st_ht/:id(\\d+)', (req, res) => {
                 }
             })
             return console.log(error);
-        }else{
+        } else {
             res.json({
                 "ok": 1,
                 state: {
@@ -744,14 +744,14 @@ router.put('/win_st_ht/:id(\\d+)', (req, res) => {
 
     let id = req.params.id;
     let resulte = {
-        win_name:req.body.win_name,
+        win_name: req.body.win_name,
         users_id: req.body.users_id,
         win_inter: req.body.win_inter,
         win_start: req.body.win_start,
         win_end: req.body.win_end,
     }
     let sql = `update win set ? where id =? ;`;
-    conn.query(sql , [resulte,id] , (error, data) => {
+    conn.query(sql, [resulte, id], (error, data) => {
         if (error) {
             res.json({
                 ok: "0",
@@ -762,7 +762,7 @@ router.put('/win_st_ht/:id(\\d+)', (req, res) => {
                 }
             })
             return console.log(error);
-        }else{
+        } else {
             res.json({
                 "ok": 1,
                 state: {
@@ -774,6 +774,188 @@ router.put('/win_st_ht/:id(\\d+)', (req, res) => {
     })
 })
 
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
+// 后台管理系统中菜品分类
 
+
+// 获取到菜品分类
+router.get('/classify_st_ht', (req, res) => {
+    let pagesize = req.query.pagesize || 10;
+    let pagenum = req.query.pagenum || 1;
+    let pageindex = (pagenum - 1) * pagesize;
+
+    let query = req.query.query || " ";
+
+    let where = ` WHERE  1  `;
+
+    if (query !== " ") {
+        where = where + ` AND name like '%${query}%' `;
+    }
+    let order = `order by id asc `
+    let limit = ` limit ${pageindex}, ${pagesize} `;
+
+    let sql = `select count(*) as total  from stclassify; select * from stclassify ${where} ${order} ${limit}`;
+    conn.query(sql, (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        if (data.length === 0) {
+            res.json({
+                "ok": 0,
+                state: {
+                    code: "400",
+                    msg: "没有该条件的数据",
+                },
+                data: data
+            })
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "获取分类数据成功",
+                },
+                data: data
+            })
+        }
+    })
+})
+// 通过id获取到菜品分类
+router.get('/classify_st_ht/:id(\\d+)', (req, res) => {
+    let id = req.params.id;
+    let sql = `select * from stclassify where id = ?`;
+    conn.query(sql, [id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        if (data.length === 0) {
+            res.json({
+                "ok": 0,
+                state: {
+                    code: "400",
+                    msg: "没有该条件的数据",
+                },
+                data: data
+            })
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "通过id获取菜品分类",
+                },
+                data: data
+            })
+        }
+    })
+})
+// 添加菜品分类
+router.post("/classify_st_ht", (req, res) => {
+    let result = {
+        name: req.body.name,
+    }
+    let sql = `insert into stclassify set ?`;
+    conn.query(sql, result, (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "添加窗口数据成功",
+                }
+            })
+        }
+    })
+
+})
+// 删除菜品分类
+router.delete('/classify_st_ht/:id(\\d+)', (req, res) => {
+    let id = req.params.id;
+    let sql = `delete from stclassify where id =? ;`;
+    conn.query(sql, [id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "删除数据成功",
+                }
+            })
+        }
+    })
+})
+// 修改菜品分类
+router.put('/classify_st_ht/:id(\\d+)', (req, res) => {
+    let id = req.params.id;
+    let resulte = {
+        name: req.body.name,
+    }
+    let sql = `update stclassify set ? where id = ? ;`;
+    conn.query(sql, [resulte, id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "修改菜品分类成功",
+                }
+            })
+        }
+    })
+})
 
 module.exports = router;
