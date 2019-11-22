@@ -237,5 +237,21 @@ router.put('/update_info/:id(\\d+)', (req, res) => {
 
     })
 })
+// 上传图片
+router.post('/upload_phone/:id(\\d+)', (req, res) => {
+    let url = JSON.parse(req.body.url)
+    let id = req.params.id
+    let sql = `update users set head_img= ? where id=?`
+    conn.query(sql, [url, id], (error, data) => {
+        if (error) {
+            console.log(error)
+        }
+        else {
+            res.json({
+                ok: 1,
+            })
+        }
+    })
+})
 
 module.exports = router;
