@@ -1048,7 +1048,6 @@ router.get('/menu_st_ht', (req, res) => {
                 data: data
             })
         } else {
-            // console.log(data);
             res.json({
                 "ok": 1,
                 state: {
@@ -1097,12 +1096,18 @@ router.get('/menu_st_ht/:id(\\d+)', (req, res) => {
         }
     })
 })
-// 添加菜品分类
+// 添加菜品
 router.post("/menu_st_ht", (req, res) => {
     let result = {
-        name: req.body.name,
+        menu_name: req.body.menu_name,
+        menu_describe: req.body.menu_describe || null,
+        menu_price: req.body.menu_price,
+        menu_unit: req.body.menu_unit,
+        menu_img: req.body.menu_img || null,
+        recommend: req.body.recommend || "0",
+
     }
-    let sql = `insert into stclassify set ?`;
+    let sql = `insert into menu set ?`;
     conn.query(sql, result, (error, data) => {
         if (error) {
             res.json({
@@ -1120,14 +1125,61 @@ router.post("/menu_st_ht", (req, res) => {
                 "ok": 1,
                 state: {
                     code: "200",
-                    msg: "添加窗口数据成功",
+                    msg: "添加菜品数据成功",
+                },
+                data:data
+            })
+            console.log(data);
+        }
+    })
+})
+// 添加菜品-窗口-分类-表  win_menu
+router.post("/win_menu_st_ht", (req, res) => {
+    let result = {
+        win_id: req.body.win_id,
+        stclassify_id: req.body.stclassify_id,
+        menu_id: req.body.menu_id,
+        user_id: req.body.users_id
+    }
+    for (let key in result){
+        if(result[key]=="" || result[key]==undefined || result == null){
+            return res.json({
+                ok:"0",
+                state:{
+                    code: "400",
+                    msg: `${key}的数据为${result[key]}`
+                }
+            })
+        }
+    }
+        let sql = `insert into win_menu set ?`;
+    conn.query(sql, result, (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "添加中间表数据成功",
                 }
             })
         }
     })
-
 })
-// 删除菜品分类
+
+
+
+// 删除菜品
 router.delete('/menu_st_ht/:id(\\d+)', (req, res) => {
     let id = req.params.id;
     let sql = `delete from stclassify where id =? ;`;
@@ -1153,7 +1205,7 @@ router.delete('/menu_st_ht/:id(\\d+)', (req, res) => {
         }
     })
 })
-// 修改菜品分类
+// 修改菜品
 router.put('/menu_st_ht/:id(\\d+)', (req, res) => {
     let id = req.params.id;
     let resulte = {
