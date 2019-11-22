@@ -220,10 +220,11 @@ router.post('/createorder_st', (req, res) => {
               msg: "创建失败"
             })
           } else {
-            // res.json({
-            //   ok: 1,
-            //   msg: "创建成功"
-            // })
+            res.json({
+              ok: 1,
+              id:data[0].insertId,
+              msg: "创建成功"
+            })
           }
         })
 
