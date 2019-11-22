@@ -14,14 +14,13 @@ router.get('/myCart_st', (req, res) => {
         error: error
       })
     } else {
-
-      if (data.length == 0) {
+      
+      if (data.length === 0) {
         return res.json({
           ok: 1,
           data: []
         })
       } else {
-
               // 获取商品id列表 
       let cart_ids = [];
 
