@@ -5,7 +5,7 @@ const db = require("../../db")
 router.get("/plaza", (req, res) => {
     let sql = `select 
     u.id user_id,u.username,u.head_img,
-    a.me_id plazaUser_id,a.add_time,a.content,
+    a.id plazaUser_id,a.add_time,a.content,
     b.plaza_img,
     a.IsSolook,
     (select count(*) from plazalike f where f.plaza_id=a.id) likefill 
@@ -16,9 +16,8 @@ router.get("/plaza", (req, res) => {
             console.log(err)
             return
         }
-        // console.log(data)
         data.forEach(v => {
-            v.plaza_img = JSON.parse(v.plaza_img)
+            v.plaza_img = v.plaza_img.split(",")
         });
 
         res.json({
@@ -34,12 +33,11 @@ router.get(`/plaza_details/:plaza_id`, (req, res) => {
     // console.log(id)
     let sql = `select  distinct
     u.id user_id,u.username,u.head_img,
-    a.me_id plazaUser_id,a.add_time,a.content,
+    a.id plazaUser_id,a.add_time,a.content,
     b.plaza_img,
     (select count(*) from plazalike f where f.plaza_id=a.id) likefill 
     from plaza a, plazaimg b, users u 
-    where u.id = a.Me_id and b.plaza_id = a.id
-    having plazaUser_id=?`
+    where u.id = a.Me_id and b.plaza_id = a.id HAVING plazaUser_id=?`
     db.query(sql, id, (err, data) => {
         if (err) {
             console.log(err)
@@ -48,7 +46,7 @@ router.get(`/plaza_details/:plaza_id`, (req, res) => {
         // data[0].plaza_img = JSON.parse(data[0].plaza_img)
         // console
         data.forEach(v => {
-            v.plaza_img = JSON.parse(v.plaza_img)
+            v.plaza_img = v.plaza_img.split(",")
         });
         res.json({
             'code': 200,
@@ -62,6 +60,7 @@ router.get(`/plaza_details/:plaza_id`, (req, res) => {
 // 根据广场帖子id获取评论
 router.get('/getSpeak', (req, res) => {
     let id = req.query.id
+    // console.log(id)
     let sql = `select * from plazareview where plaza_id = ?`
     db.query(sql, id, (err, data) => {
         if (err) {
@@ -87,8 +86,8 @@ router.get('/getSpeak', (req, res) => {
             // console.log(data)
             info.data.forEach((v, i) => {
                 v.isClick = false
-                data.forEach(v1 => { 
-                    if(v.commont_id == v1.id){
+                data.forEach(v1 => {
+                    if (v.commont_id == v1.id) {
                         v.username = v1.username
                         v.head_img = v1.head_img
                     }
@@ -117,9 +116,64 @@ router.post('/addSpeak', (req, res) => {
 // 发表帖子
 router.post('/addPlaza', (req, res) => {
     let info = req.body
-    // console.log(info)
+    // plaza表
+    let plaza = {
+        content: info.textareaAValue,
+        IsSolook: info.radio,
+        add_time: info.time,
+        me_id: info.user_id
+    }
+    // console.log(plaza)
+    let sql = `insert into plaza set ?`
+    let sql1 = `insert into plazaimg set ?`
+    db.query(sql, plaza, (err, data) => {
+        if (err) {
+            console.log(err)
+            return
+        } else {
+            let image = {
+                plaza_img: info.basic,
+                plaza_id: data.insertId
+            }
+            db.query(sql1, image, (err, data1) => {
+                if (err) {
+                    console.log(err)
+                    return
+                }
+                // console.log(data1)
+            })
+        }
+    })
 })
 
+
+// 根据用户id查询所有动态
+router.get('/plaza_fill/:id', (req, res) => {
+    let id = req.params.id
+    console.log(id)
+    let sql = `select
+    u.id user_id,u.username,u.head_img,
+    a.me_id plazaUser_id,a.add_time,a.content,
+    b.plaza_img,
+    (select count(*) from plazalike f where f.plaza_id=a.id) likefill 
+    from plaza a, plazaimg b, users u 
+    where u.id = a.Me_id and b.plaza_id = a.id HAVING plazaUser_id=?`
+    db.query(sql, id, (err, data) => {
+        if (err) {
+            console.log(err)
+            return
+        }
+        data.forEach(v => {
+            v.plaza_img = v.plaza_img.split(",")
+        });
+        res.json({
+            'code': 200,
+            'data': data
+        })
+        console.log(data)
+
+    })
+})
 
 
 module.exports = router;
