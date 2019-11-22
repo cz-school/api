@@ -585,6 +585,8 @@ router.get('/win_st_ht', (req, res) => {
 
     let query = req.query.query || "";
 
+    let users_id = req.query.users_id ||" "; 
+
     // 获取到窗口的名称
     let win_name = req.query.win_name || " ";
     // 获取到窗口开放的时间
@@ -593,6 +595,10 @@ router.get('/win_st_ht', (req, res) => {
     let win_end = req.query.win_end || " ";
 
     let where = ` WHERE  1  `;
+    // 食堂老板
+    if (users_id !== " ") {
+        where = where + ` AND users_id =${users_id} `;
+    }
     if (win_name !== " ") {
         where = where + ` AND win_name =${win_name} `;
     }
@@ -957,5 +963,9 @@ router.put('/classify_st_ht/:id(\\d+)', (req, res) => {
         }
     })
 })
+// 
+
+
+
 
 module.exports = router;
