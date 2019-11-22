@@ -65,5 +65,53 @@ router.post('/updateOrderMoney',(req,res) => {
     })
 })
 
+// 后台数据显示
+router.get('/showTableData',(req,res) => {
+    // 获取用户id
+    let id = req.query.id
+    // 获取商品订单状态
+    let state = req.query.state
+    let sql = '  Select * From `order`  where state in (?)  and id in (Select order_id From order_stdetail where menu_id in (Select menu_id From win_menu where user_id in (?) ))'
+    let msg  = [state,id]
+    conn.query(sql,msg,(error,data) => {
+        if(error) {
+            res.json({
+                'ok':0,
+                'error':error
+            })
+            console.log(error)
+        } else {
+            res.json({
+                'ok':1,
+                'data':data
+            })
+        }
+    })
+})
+
+// 修改订单状态
+router.post('/affirmState/:id(\\d+)/:state(\\d+)',(req,res) => {
+    // 获取商品id
+    let id = req.params.id
+    // 获取订单状态
+    let state = (req.params.state - 0) + 1
+    // 传入信息
+    let msg = [state,id]
+    conn.query('update `order` set state =? where id = ?',msg,(error,data) => {
+        if(error) {
+            res.json({
+                'ok':0,
+                'error':error
+            })
+            console.log(error)
+        } else {
+            res.json({
+                'ok':1,
+                'msg':'更新成功'
+            })
+        }
+    })
+})
+
 module.exports = router;
 
