@@ -585,7 +585,7 @@ router.get('/win_st_ht', (req, res) => {
 
     let query = req.query.query || "";
 
-    let users_id = req.query.users_id ||" "; 
+    let users_id = req.query.users_id || " ";
 
     // 获取到窗口的名称
     let win_name = req.query.win_name || " ";
@@ -596,7 +596,7 @@ router.get('/win_st_ht', (req, res) => {
 
     let where = ` WHERE  1  `;
     // 食堂老板
-    if (users_id !== " ") {
+    if (users_id !== " " && users_id !== "undefined") {
         where = where + ` AND users_id =${users_id} `;
     }
     if (win_name !== " ") {
@@ -796,18 +796,23 @@ router.get('/classify_st_ht', (req, res) => {
     let pagesize = req.query.pagesize || 10;
     let pagenum = req.query.pagenum || 1;
     let pageindex = (pagenum - 1) * pagesize;
-
+    let users_id = req.query.users_id || "1";
     let query = req.query.query || " ";
 
-    let where = ` WHERE  1  `;
+    let where = ` WHERE  1  And b.stclassify_id = a.id`;
 
     if (query !== " ") {
         where = where + ` AND name like '%${query}%' `;
     }
-    let order = `order by id asc `
+    // 食堂老板
+    if (users_id !== " " && users_id !== "undefined") {
+        where = where + ` AND user_id =${users_id} `;
+    }
+    let order = `order by a.id asc `
     let limit = ` limit ${pageindex}, ${pagesize} `;
 
-    let sql = `select count(*) as total  from stclassify; select * from stclassify ${where} ${order} ${limit}`;
+    let sql = `select count(*) as total  from stclassify a, win_menu b where b.stclassify_id=a.id And user_id = ${users_id}; 
+    select * from stclassify a, win_menu b ${where} ${order} ${limit}`;
     conn.query(sql, (error, data) => {
         if (error) {
             res.json({
@@ -964,6 +969,219 @@ router.put('/classify_st_ht/:id(\\d+)', (req, res) => {
     })
 })
 // 
+
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+// 获取到菜品的后台管理系统
+
+
+
+
+
+
+// 更具登录的人获取 获取到菜品  和 所属分类 所属窗口
+router.get('/menu_st_ht', (req, res) => {
+    let pagesize = req.query.pagesize || 10;
+    let pagenum = req.query.pagenum || 1;
+    let pageindex = (pagenum - 1) * pagesize;
+    let query = req.query.query || " ";
+    let users_id = req.query.users_id || " ";
+    let win_id = req.query.win_id || " ";
+    let classify_id = req.query.classify_id || " ";
+    // where 条件
+    let where = ` WHERE  1  AND a.id = b.menu_id And b.stclassify_id = c.id And b.win_id = d.id `;
+
+    if (query !== " ") {
+        where = where + ` AND a.menu_name like '%${query}%' `;
+    }
+    // 食堂老板
+    if (users_id !== " " && users_id !== "undefined") {
+        where = where + ` AND b.user_id =${users_id} `;
+    }
+
+    // 根据窗口渲染数据
+    if (win_id !== " ") {
+        where = where + ` AND b.win_id like '%${win_id}%' `;
+    }
+    // 根据分类渲染数据
+    if (classify_id !== " ") {
+        where = where + ` AND b.stclassify_id like '%${classify_id}%' `;
+    }
+    let order = `order by a.id asc `
+    let limit = ` limit ${pageindex}, ${pagesize} `;
+
+    let sql = `select count(*) as total from menu a, win_menu b , stclassify c , win d
+    Where a.id = b.menu_id And b.stclassify_id = c.id And b.win_id = d.id And b.user_id = ${users_id};
+    select *,c.name as classify_name from menu a, win_menu b , stclassify c , win d ${where} ${order} ${limit}`;
+
+    // console.log(sql);
+    conn.query(sql, (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        if (data.length === 0) {
+            res.json({
+                "ok": 0,
+                state: {
+                    code: "400",
+                    msg: "没有该条件的数据",
+                },
+                data: data
+            })
+        } else {
+            // console.log(data);
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "获取根据不同状态获取菜品数据成功",
+                },
+                data: data
+            })
+        }
+    })
+})
+// 通过id获取到菜品分类
+router.get('/menu_st_ht/:id(\\d+)', (req, res) => {
+    let id = req.params.id;
+    let sql = `select * from stclassify where id = ?`;
+    conn.query(sql, [id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        if (data.length === 0) {
+            res.json({
+                "ok": 0,
+                state: {
+                    code: "400",
+                    msg: "没有该条件的数据",
+                },
+                data: data
+            })
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "通过id获取菜品分类",
+                },
+                data: data
+            })
+        }
+    })
+})
+// 添加菜品分类
+router.post("/menu_st_ht", (req, res) => {
+    let result = {
+        name: req.body.name,
+    }
+    let sql = `insert into stclassify set ?`;
+    conn.query(sql, result, (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        }
+        else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "添加窗口数据成功",
+                }
+            })
+        }
+    })
+
+})
+// 删除菜品分类
+router.delete('/menu_st_ht/:id(\\d+)', (req, res) => {
+    let id = req.params.id;
+    let sql = `delete from stclassify where id =? ;`;
+    conn.query(sql, [id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "删除数据成功",
+                }
+            })
+        }
+    })
+})
+// 修改菜品分类
+router.put('/menu_st_ht/:id(\\d+)', (req, res) => {
+    let id = req.params.id;
+    let resulte = {
+        name: req.body.name,
+    }
+    let sql = `update stclassify set ? where id = ? ;`;
+    conn.query(sql, [resulte, id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        } else {
+            res.json({
+                "ok": 1,
+                state: {
+                    code: "200",
+                    msg: "修改菜品分类成功",
+                }
+            })
+        }
+    })
+})
 
 
 
