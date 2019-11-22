@@ -7,7 +7,8 @@ const conn = require('../../db')
 // 用户的所有收货地址
 router.get('/siteAll', (req, res) => {
     // 获取用户id 默认为1
-    let id = req.query.id || 1
+    let id = req.query.id 
+    // console.log(id)
     conn.query('select * from address where users_id = ?', id, (error, data) => {
         if (error) {
             res.json({
@@ -24,34 +25,14 @@ router.get('/siteAll', (req, res) => {
     })
 })
 
-// 用户的默认收货地址
-router.get('/siteDefault', (req, res) => {
-    // 获取用户id 默认为1
-    let id = req.query.id || 1
-    conn.query('select * from address where users_id = ? and sdefault = 1', id, (error, data) => {
-        if (error) {
-            res.json({
-                'ok': 0,
-                'error': error
-            })
-            return
-        } else {
-            res.json({
-                'ok': 1,
-                'data': data
-            })
-        }
-    })
-})
-
-
 // 添加用户地址
 router.post('/addSite', (req, res) => {
     // 获取添加的数据
     let msg = req.body.addUsers
     // console.log(msg)
     // 获取登陆的用户id
-    let id = req.query.id || 1
+    let id = req.body.id 
+    // console.log(id + '222')
     // 是否是默认地址
     let mrSite = msg.checked1 ? 1 : 0
     // 插入的信息
@@ -131,7 +112,8 @@ router.get('/alertSite', (req, res) => {
     let msg = JSON.parse(msg1)
 
     // 获取登陆的用户id
-    let id = req.query.id || 1
+    let id = req.query.id 
+    // console.log(id + 'dqwq')
     // 获取修改后的地址是否是默认地址
     let che = JSON.parse(req.query.checked1)
     let mrSite = che === true ? 1 : 0

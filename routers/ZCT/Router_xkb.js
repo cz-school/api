@@ -28,7 +28,8 @@ router.get('/getOrderMoney',(req,res) => {
     })
 })
 router.get('/getUsersMoney',(req,res)=> {
-    let usersId =  1
+    let usersId =  req.query.id
+    // console.log(usersId + '123123sdasqw')
     conn.query('select price from users where id = ?',usersId,(error,data) => {
         if(error) {
             res.json({
@@ -47,7 +48,7 @@ router.get('/getUsersMoney',(req,res)=> {
 // 付款完毕后修改用户剩余金额
 router.post('/updateOrderMoney',(req,res) => {
     let price = req.body.price
-    let id = 1
+    let id = req.body.id
     let msg = [price,id]  
     conn.query('update users set price=? where id = ?',msg,(error,data) => {
         if(error) {
@@ -60,54 +61,6 @@ router.post('/updateOrderMoney',(req,res) => {
             res.json({
                 'ok':1,
                 'data':data
-            })
-        }
-    })
-})
-
-// 后台数据显示
-router.get('/showTableData',(req,res) => {
-    // 获取用户id
-    let id = req.query.id
-    // 获取商品订单状态
-    let state = req.query.state
-    let sql = '  Select * From `order`  where state in (?)  and id in (Select order_id From order_stdetail where menu_id in (Select menu_id From win_menu where user_id in (?) ))'
-    let msg  = [state,id]
-    conn.query(sql,msg,(error,data) => {
-        if(error) {
-            res.json({
-                'ok':0,
-                'error':error
-            })
-            console.log(error)
-        } else {
-            res.json({
-                'ok':1,
-                'data':data
-            })
-        }
-    })
-})
-
-// 修改订单状态
-router.post('/affirmState/:id(\\d+)/:state(\\d+)',(req,res) => {
-    // 获取商品id
-    let id = req.params.id
-    // 获取订单状态
-    let state = (req.params.state - 0) + 1
-    // 传入信息
-    let msg = [state,id]
-    conn.query('update `order` set state =? where id = ?',msg,(error,data) => {
-        if(error) {
-            res.json({
-                'ok':0,
-                'error':error
-            })
-            console.log(error)
-        } else {
-            res.json({
-                'ok':1,
-                'msg':'更新成功'
             })
         }
     })
