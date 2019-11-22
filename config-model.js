@@ -5,10 +5,11 @@ module.exports = {
     },
     db: {
         host: 'cdb-njokm572.bj.tencentcdb.com',
-        port: ,
-        user: '',
-        password: '',
-        database: '',
+        port: 10165,
+        user: 'root',
+        password: 'myiszz00',
+        database: 'banana',
+        multipleStatements: true
     },
     key:"asdfghjkl!@#$"
-}
+  }
