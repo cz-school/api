@@ -2,8 +2,8 @@ const express = require("express")
 const router = express.Router()
 const db = require("../../db")
 // 获取食堂购物车信息
-router.get('/myCart_st', (req, res) => {
-  let userID = 1;  //req.user.id
+router.get('/myCart_st/:id', (req, res) => {
+  let userID = req.params.id;  //req.user.id
   let sql = 'SELECT * FROM stcare WHERE user_id = ?'
 
   db.query(sql, userID, (error, data) => {

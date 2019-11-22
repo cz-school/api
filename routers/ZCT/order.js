@@ -5,14 +5,18 @@ const db = require("../../db")
 // 查询订单
 router.get("/order_st/:state", (req, res) => {
   let state = req.params.state;
+  let id = req.query.id;
+
   let sql = null;
   if (state !== '9') {
-    sql = 'SELECT * FROM `order` WHERE classify_State = 1 AND state = ?'
+    sql = 'SELECT * FROM `order` WHERE classify_State = 1 AND state = ? AND user_id = ?'
+    var orderdata = [state,id]
   } else {
-    sql = 'SELECT * FROM `order` WHERE classify_State = 1'
+    sql = 'SELECT * FROM `order` WHERE classify_State = 1 AND user_id = ?'
+    var orderdata = id
   }
 
-  db.query(sql, state, (error, data) => {
+  db.query(sql, orderdata, (error, data) => {
     if (error) {
       console.log(error)
       return res.json({
