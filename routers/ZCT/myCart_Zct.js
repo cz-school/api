@@ -15,6 +15,13 @@ router.get('/myCart_st', (req, res) => {
       })
     } else {
 
+      if (data.length == 0) {
+        return res.json({
+          ok: 1,
+          data: []
+        })
+      }
+
       // 获取商品id列表 
       let cart_ids = [];
 
@@ -36,8 +43,8 @@ router.get('/myCart_st', (req, res) => {
           })
 
         } else {
-          data2.forEach(item=>{
-            if(item.menu_check == 1) {
+          data2.forEach(item => {
+            if (item.menu_check == 1) {
               item.menu_check = true
             } else {
               item.menu_check = false
@@ -111,7 +118,7 @@ router.put("/myCart_s_all", (req, res) => {
   } else {
     ischeck = 0
   }
-  
+
 
   let sql = "UPDATE stcare SET menu_check = ? WHERE id in(?)"
   db.query(sql, [ischeck, ids], (error, data) => {
