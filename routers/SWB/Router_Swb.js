@@ -219,7 +219,11 @@ router.get('/shop/:id', (req, res) => {
     let reqData = req.query.inputVal || "";
     let limit = ` limit ${pageindex}, ${pagesize} `;
     const reqId = req.params.id
-
+    console.log(reqId)
+    // if (reqId == -1) {
+    //     var sql = `select * from shop`
+    //     // var value = '%' + reqData + '%'
+    // } else
     if (reqData != "undefined") {
         var sql = `select count(*) as total from shop where shop_name like ? and buys = 0;select *,id shop_id from shop where shop_name like ? and buys = 0 ${limit}`
         var value = '%' + reqData + '%'
@@ -239,11 +243,16 @@ router.get('/shop/:id', (req, res) => {
         and  b.buys = 0
         ${limit}`
         var value = Number(reqId) + 1
-    } else if (reqId === "null") {
+    } else if (reqId === null) {
+        console.log("ok")
+        var sql = `select count(*) as total from shop where buys = 0;select *,id shop_id from shop where buys = 0 ${limit}`
+        var value = ""
+    } if (reqId === "null") {
+        console.log("ok")
         var sql = `select count(*) as total from shop where buys = 0;select *,id shop_id from shop where buys = 0 ${limit}`
         var value = ""
     }
-
+    console.log(sql, value)
     db.query(sql, [value, value], (err, data) => {
         if (err) {
             res.json({
@@ -258,6 +267,57 @@ router.get('/shop/:id', (req, res) => {
             })
         }
     })
+})
+
+// 单个商品
+router.get('/shopId/:id', (req, res) => {
+    const reqId = req.params.id
+    // console.log(reqId)
+    var sql = `select * from shop where id = ${reqId}`
+
+    db.query(sql, (err, data) => {
+        if (err) {
+            res.json({
+                'ok': 0,
+                'error': err
+            })
+            return
+        } else {
+            res.json({
+                'ok': 1,
+                'data': data
+            })
+        }
+    })
+    // if (reqId >= 0) {
+    //     var sql = `select * from shop where id = ${reqId}`
+    //     var value = '%' + reqData + '%'
+    // } else
+    // if (reqData != "undefined") {
+    //     var sql = `select count(*) as total from shop where shop_name like ? and buys = 0;select *,id shop_id from shop where shop_name like ? and buys = 0 ${limit}`
+    //     var value = '%' + reqData + '%'
+    // } else if (reqId != "null") {
+    //     var sql = `
+    //     select count(*) as total 
+    //     from esclassify_shop a,shop b,esclassify c 
+    //     where a.esclassify_id=c.id 
+    //     and  a.shop_id=b.id 
+    //     and  esclassify_id = ?
+    //     and  b.buys = 0;
+    //     select * 
+    //     from esclassify_shop a,shop b,esclassify c 
+    //     where a.esclassify_id=c.id 
+    //     and  a.shop_id=b.id 
+    //     and  esclassify_id = ?
+    //     and  b.buys = 0
+    //     ${limit}`
+    //     var value = Number(reqId) + 1
+    // } else if (reqId === "null") {
+    //     var sql = `select count(*) as total from shop where buys = 0;select *,id shop_id from shop where buys = 0 ${limit}`
+    //     var value = ""
+    // }
+
+
 })
 
 router.get('/bgshop/:id', (req, res) => {
