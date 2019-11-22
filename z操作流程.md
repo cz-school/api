@@ -25,7 +25,7 @@
   提交完代码时候 将自己创建的本地分支删除掉 ，重新创建一个分支，因为此时的test分支和master分支版本不同 ，
   如果不删除，需要将master 分支上的代码合并 并 更新到test 分支上面 建议先删除后创建 
   git branch  -d test  删除test分支
-  gut checkout -b test 创建一个test分支  
+  git checkout -b test 创建一个test分支  
   这样就保证版本相同了。  
 
  
