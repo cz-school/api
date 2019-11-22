@@ -7,7 +7,7 @@ router.post('/esclassify_shop', (req, res) => {
     // var value = `null,''`
    
     var sql = `INSERT INTO esclassify_shop VALUES (null,'${req.body.shopId}','${req.body.esclassifyId}')`
-    console.log(sql)
+    // console.log(sql)
     db.query(sql, (err, data) => {
         if (err) {
             console.log(err)
@@ -17,7 +17,7 @@ router.post('/esclassify_shop', (req, res) => {
             })
             return
         } else {
-            console.log(data)
+            // console.log(data)
             res.json({
                 'ok': 1,
                 'data': data
@@ -89,7 +89,7 @@ router.get('/shop/:id', (req, res) => {
 router.post('/shop', (req, res) => {
     var value = `null,'${req.body.shopData.shop_name}', '${req.body.shopData.shop_describe}', ${req.body.shopData.shop_price}, '${req.body.shopData.shop_img}', '${req.body.shopData.shop_unit}', 17, 0,${req.body.shopData.shop_original_cost}, ${req.body.shopData.shop_num_new}`
     var sql = `INSERT INTO shop VALUES (${value})`
-    console.log(sql,value)
+    // console.log(sql,value)
     db.query(sql, (err, data) => {
         db.query('select max(id) maxId from shop ', (err1, data1) => {
             if (err1) {

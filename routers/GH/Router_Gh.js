@@ -221,4 +221,56 @@ router.post('/comment', (req, res) => {
 
     })
 })
+
+// 后台代码
+// 获取所有的订单时间数量
+router.get('/showtime', (req, res) => {
+    // 多少天前的时间戳
+    let begtime = req.query[0]
+    // 当天23.59分的时间戳
+    let endtime = (new Date().setHours(24, 0, 0, 0)) / 1000;
+    // console.log(begtime, endtime)
+    conn.query('select a.add_time from `order` a LEFT JOIN order_esdetail b on a.id = b.order_id  where a.add_time >=? and a.add_time <=?', [begtime, endtime], (error, data) => {
+        if (error) {
+            console.log(error)
+        }
+        // console.log(data)
+        let info = []
+        info = data
+
+        function getLocalTime(nS) {
+            return new Date(parseInt(nS) * 1000).toLocaleString().replace(/:\d{1,2}$/, ' ');
+        }
+        info.forEach(v => {
+            let value = getLocalTime(v.add_time)
+            v.add_time = value
+        })
+        // console.log(info)
+        let arr = []
+        for (var i = 0; i < info.length; i++) {
+            arr.push(info[i].add_time)
+        }
+        // console.log(arr.length)
+        var arrNum = 1
+        var numArr = []
+        for (var i = 0; i < arr.length; i++) {
+            arr[i].slice(0, 10)
+            if (i == arr.length - 1) {
+                numArr.push(arrNum)
+            } else if (arr[i].slice(0, 10) == arr[i + 1].slice(0, 10)) {
+                arrNum++
+            } else {
+                numArr.push(arrNum)
+                arrNum = 1
+            }
+        }
+        // console.log(numArr)
+        // console.log(arr[0].slice(9,7))
+        res.json({
+            code:"200",
+            msg:"查询成功",
+            data:numArr
+        })
+    })
+})
 module.exports = router;
