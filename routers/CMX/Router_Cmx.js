@@ -1,6 +1,22 @@
 const express = require("express")
 const router = express.Router()
 const conn = require('../../db')
+const fs = require("fs");
+const multer = require('multer')
+const upload = multer()
+let OSS = require('ali-oss');
+const stringRandom = require('string-random');
+let client = new OSS({
+    // 仓库地域节点
+    region: 'oss-cn-beijing',
+    //云账号AccessKey有所有API访问权限，建议遵循阿里云安全最佳实践，部署在服务端使用RAM子账号或STS，部署在客户端使用STS。
+    // oss 中 密钥id
+    accessKeyId: 'LTAIWRgyQSSukvgN',
+    // oss 访问权限代码
+    accessKeySecret: 'WCVHiGBQsKmoiIl8Y9DK0NZccT1Gdz',
+    //  存储仓库名字
+    bucket: 'zhangchaotang',
+});
 
 // 根据用户登录id获取个人用户信息
 router.get('/self_info/:id(\\d+)', (req, res) => {
@@ -238,23 +254,36 @@ router.put('/update_info/:id(\\d+)', (req, res) => {
     })
 })
 // 上传图片
-router.post('/upload_phone/:id(\\d+)', (req, res) => {
-    let url = JSON.parse(req.body.url)
-    let id = req.params.id
-    let sql = `update users set head_img= ? where id=?`
-    conn.query(sql, [url, id], (error, data) => {
-        if (error) {
-            console.log(error)
-        }
-        else {
+router.post('/upload_phone', upload.single('file'), (req, res) => {
+    // 获取名字
+    let file_name = req.file.originalname
+    // 获取后缀名
+    file_name = file_name.replace(/.+\./, "");
+    // 生成随机名字
+    let randomName = stringRandom(16);
+    // 拼接文件名字
+    let fileName = randomName + "." + file_name;
+    // 创建写入流
+    let ws = fs.createWriteStream('./public/uploed/' + fileName);
+    // 写入buffer数据
+    ws.write(req.file.buffer);
+    // 文件写入结束
+    ws.end(async function () {
+        //     oss仓库地址          要上传文件的地址
+        let result = await client.put('/banana/' + fileName, './public/uploed/' + fileName);
+        if (result.res.status != 200) {
             res.json({
-                ok: 1,
+                code: "400",
+                msg: "上传失败"
+            })
+        } else {
+            res.json({
+                info: result.url,
+                code: 200,
+                msg: "上传成功"
             })
         }
     })
 })
 
 module.exports = router;
-
-"doc/git\345\206\262\347\252\201/assets/1574405411406.png"
-"doc/git\345\206\262\347\252\201/assets/1574405448192.png"
