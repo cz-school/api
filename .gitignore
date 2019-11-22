@@ -21,11 +21,11 @@ node_modules
 # 忽略配置文件
 config.js
 # 上传的图片忽略
-server/public/upload/*.png
-server/public/upload/*.jpg
-server/public/upload/*.gif
-server/public/upload/*.svg
-server/public/upload/*.webp
-server/public/upload/*.jpeg
-server/public/upload/*.bmp
-# upload/*
+server/public/uploed/*.png
+server/public/uploed/*.jpg
+server/public/uploed/*.gif
+server/public/uploed/*.svg
+server/public/uploed/*.webp
+server/public/uploed/*.jpeg
+server/public/uploed/*.bmp
+# uploed/*
