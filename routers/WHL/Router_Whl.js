@@ -1127,7 +1127,7 @@ router.post("/menu_st_ht", (req, res) => {
                     code: "200",
                     msg: "添加菜品数据成功",
                 },
-                data:data
+                data: data
             })
             console.log(data);
         }
@@ -1141,18 +1141,18 @@ router.post("/win_menu_st_ht", (req, res) => {
         menu_id: req.body.menu_id,
         user_id: req.body.users_id
     }
-    for (let key in result){
-        if(result[key]=="" || result[key]==undefined || result == null){
+    for (let key in result) {
+        if (result[key] == "" || result[key] == undefined || result == null) {
             return res.json({
-                ok:"0",
-                state:{
+                ok: "0",
+                state: {
                     code: "400",
                     msg: `${key}的数据为${result[key]}`
                 }
             })
         }
     }
-        let sql = `insert into win_menu set ?`;
+    let sql = `insert into win_menu set ?`;
     conn.query(sql, result, (error, data) => {
         if (error) {
             res.json({
@@ -1180,30 +1180,48 @@ router.post("/win_menu_st_ht", (req, res) => {
 
 
 // 删除菜品
-router.delete('/menu_st_ht/:id(\\d+)', (req, res) => {
+router.delete('/menu_st_ht/:id(\\d+)/:win_menu_id(\\d+)', (req, res) => {
     let id = req.params.id;
-    let sql = `delete from stclassify where id =? ;`;
-    conn.query(sql, [id], (error, data) => {
-        if (error) {
-            res.json({
-                ok: "0",
-                state: {
-                    code: "400",
-                    msg: "出现错误",
-                    'error': error
-                }
-            })
-            return console.log(error);
-        } else {
-            res.json({
-                "ok": 1,
-                state: {
-                    code: "200",
-                    msg: "删除数据成功",
-                }
-            })
-        }
-    })
+    let win_menu_id = req.params.win_menu_id;
+    console.log(req.params);
+    // let sql = `delete from menu where id =? ;`;
+    // conn.query(sql, [id], (error, data) => {
+    //     if (error) {
+    //         res.json({
+    //             ok: "0",
+    //             state: {
+    //                 code: "400",
+    //                 msg: "出现错误",
+    //                 'error': error
+    //             }
+    //         })
+    //         return console.log(error);
+    //     } else {
+    //         conn.query(`delete from menu where id =${win_menu_id}`, (error1, data1) => {
+    //             if (error1) {
+    //                 res.json({
+    //                     ok: "0",
+    //                     state: {
+    //                         code: "400",
+    //                         msg: "出现错误",
+    //                         'error': error1
+    //                     }
+    //                 })
+    //                 return console.log(error1);
+    //             } else {
+    //                 res.json({
+    //                     "ok": 1,
+    //                     state: {
+    //                         code: "200",
+    //                         msg: "删除数据成功",
+    //                     }
+    //                 })
+    //             }
+    //         })
+
+    //     }
+    // })
+
 })
 // 修改菜品
 router.put('/menu_st_ht/:id(\\d+)', (req, res) => {
