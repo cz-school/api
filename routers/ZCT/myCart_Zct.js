@@ -20,9 +20,9 @@ router.get('/myCart_st', (req, res) => {
           ok: 1,
           data: []
         })
-      }
+      } else {
 
-      // 获取商品id列表 
+              // 获取商品id列表 
       let cart_ids = [];
 
       data.forEach(item => {
@@ -56,6 +56,10 @@ router.get('/myCart_st', (req, res) => {
           })
         }
       })
+
+      }
+
+
     }
   })
 
