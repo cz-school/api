@@ -255,6 +255,3 @@ router.post('/upload_phone/:id(\\d+)', (req, res) => {
 })
 
 module.exports = router;
-
-"doc/git\345\206\262\347\252\201/assets/1574405411406.png"
-"doc/git\345\206\262\347\252\201/assets/1574405448192.png"
