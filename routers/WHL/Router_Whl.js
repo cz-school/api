@@ -1023,7 +1023,7 @@ router.get('/menu_st_ht', (req, res) => {
 
     let sql = `select count(*) as total from menu a, win_menu b , stclassify c , win d
     Where a.id = b.menu_id And b.stclassify_id = c.id And b.win_id = d.id And b.user_id = ${users_id};
-    select *,c.name as classify_name from menu a, win_menu b , stclassify c , win d ${where} ${order} ${limit}`;
+    select *,c.name as classify_name , b.id as win_menu_id from menu a, win_menu b , stclassify c , win d ${where} ${order} ${limit}`;
 
     // console.log(sql);
     conn.query(sql, (error, data) => {
@@ -1129,7 +1129,6 @@ router.post("/menu_st_ht", (req, res) => {
                 },
                 data: data
             })
-            console.log(data);
         }
     })
 })
@@ -1180,47 +1179,46 @@ router.post("/win_menu_st_ht", (req, res) => {
 
 
 // 删除菜品
-router.delete('/menu_st_ht/:id(\\d+)/:win_menu_id(\\d+)', (req, res) => {
+router.delete('/win_menu_id/:id(\\d+)', (req, res) => {
     let id = req.params.id;
-    let win_menu_id = req.params.win_menu_id;
-    console.log(req.params);
-    // let sql = `delete from menu where id =? ;`;
-    // conn.query(sql, [id], (error, data) => {
-    //     if (error) {
-    //         res.json({
-    //             ok: "0",
-    //             state: {
-    //                 code: "400",
-    //                 msg: "出现错误",
-    //                 'error': error
-    //             }
-    //         })
-    //         return console.log(error);
-    //     } else {
-    //         conn.query(`delete from menu where id =${win_menu_id}`, (error1, data1) => {
-    //             if (error1) {
-    //                 res.json({
-    //                     ok: "0",
-    //                     state: {
-    //                         code: "400",
-    //                         msg: "出现错误",
-    //                         'error': error1
-    //                     }
-    //                 })
-    //                 return console.log(error1);
-    //             } else {
-    //                 res.json({
-    //                     "ok": 1,
-    //                     state: {
-    //                         code: "200",
-    //                         msg: "删除数据成功",
-    //                     }
-    //                 })
-    //             }
-    //         })
+    let win_menu_id = req.body.win_menu_id;
+    let sql = `delete from menu where id =? ;`;
+    conn.query(sql, [id], (error, data) => {
+        if (error) {
+            res.json({
+                ok: "0",
+                state: {
+                    code: "400",
+                    msg: "出现错误",
+                    'error': error
+                }
+            })
+            return console.log(error);
+        } else {
+            conn.query(`delete from menu where id =${win_menu_id}`, (error1, data1) => {
+                if (error1) {
+                    res.json({
+                        ok: "0",
+                        state: {
+                            code: "400",
+                            msg: "出现错误",
+                            'error': error1
+                        }
+                    })
+                    return console.log(error1);
+                } else {
+                    res.json({
+                        "ok": 1,
+                        state: {
+                            code: "200",
+                            msg: "删除数据成功",
+                        }
+                    })
+                }
+            })
 
-    //     }
-    // })
+        }
+    })
 
 })
 // 修改菜品
