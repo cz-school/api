@@ -148,7 +148,8 @@ router.post('/createorder_st', (req, res) => {
   // 当前时间秒
   let time = Date.parse(new Date()) / 1000;
   // 商品id
-  let commodityId = req.body.data.ids
+  let goodsdata = req.body.data.goodsdata
+  console.log(goodsdata)
   // 支付金额
   let price = req.body.data.totalPrice
   // 用户id
@@ -184,8 +185,8 @@ router.post('/createorder_st', (req, res) => {
         }
         let orderId = data2[0].id
         let iscorrect = []
-        commodityId.forEach(item => {
-          db.query('insert into order_stdetail(order_id,menu_id) values(?,?)', [orderId, item], (error3, data3) => {
+        goodsdata.forEach(item => {
+          db.query('insert into order_stdetail values(?,?,?,?,?,?)', [null,orderId, item.id, item.menu_name, item.menu_price,item.menu_num], (error3, data3) => {
             if (error3) {
               console.log(error3)
               return res.json({
@@ -215,10 +216,10 @@ router.post('/createorder_st', (req, res) => {
               msg: "创建失败"
             })
           } else {
-            res.json({
-              ok: 1,
-              msg: "创建成功"
-            })
+            // res.json({
+            //   ok: 1,
+            //   msg: "创建成功"
+            // })
           }
         })
 
