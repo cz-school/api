@@ -105,25 +105,7 @@ router.get('/esclassify/:id(\\d+)', (req, res) => {
         }
     })
 })
-// 商品分类
-// router.get('/esclassify', (req, res) => {
-//     let sql = "select * from esclassify like ?"
-//     let value = ""
-//     db.query(sql, value, (err, data) => {
-//         if (err) {
-//             res.json({
-//                 'ok': 0,
-//                 'error': err
-//             })
-//             return
-//         } else {
-//             res.json({
-//                 'ok': 1,
-//                 'data': data
-//             })
-//         }
-//     })
-// })
+
 // 添加菜品分类
 router.post("/esclassify", (req, res) => {
     let result = {
@@ -219,11 +201,7 @@ router.get('/shop/:id', (req, res) => {
     let reqData = req.query.inputVal || "";
     let limit = ` limit ${pageindex}, ${pagesize} `;
     const reqId = req.params.id
-    console.log(reqId)
-    // if (reqId == -1) {
-    //     var sql = `select * from shop`
-    //     // var value = '%' + reqData + '%'
-    // } else
+
     if (reqData != "undefined") {
         var sql = `select count(*) as total from shop where shop_name like ? and buys = 0;select *,id shop_id from shop where shop_name like ? and buys = 0 ${limit}`
         var value = '%' + reqData + '%'
@@ -244,15 +222,12 @@ router.get('/shop/:id', (req, res) => {
         ${limit}`
         var value = Number(reqId) + 1
     } else if (reqId === null) {
-        console.log("ok")
         var sql = `select count(*) as total from shop where buys = 0;select *,id shop_id from shop where buys = 0 ${limit}`
         var value = ""
     } if (reqId === "null") {
-        console.log("ok")
         var sql = `select count(*) as total from shop where buys = 0;select *,id shop_id from shop where buys = 0 ${limit}`
         var value = ""
     }
-    console.log(sql, value)
     db.query(sql, [value, value], (err, data) => {
         if (err) {
             res.json({
@@ -272,7 +247,6 @@ router.get('/shop/:id', (req, res) => {
 // 单个商品
 router.get('/shopId/:id', (req, res) => {
     const reqId = req.params.id
-    // console.log(reqId)
     var sql = `select * from shop where id = ${reqId}`
 
     db.query(sql, (err, data) => {
@@ -283,10 +257,23 @@ router.get('/shopId/:id', (req, res) => {
             })
             return
         } else {
-            res.json({
-                'ok': 1,
-                'data': data
+
+            let sql2 = 'SELECT shop_img FROM shopimg WHERE shop_id = ?'
+            db.query(sql2, reqId, (error, data2) => {
+                if (error) {
+                    return res.json({
+                        'ok': 0,
+                        'error': error
+                    })
+                } else {
+                    res.json({
+                        'ok': 1,
+                        'data': data,
+                        'imgList': data2
+                    })
+                }
             })
+
         }
     })
     // if (reqId >= 0) {
@@ -393,25 +380,40 @@ router.delete('/bgshop/:id(\\d+)', (req, res) => {
 
 // 商品添加add
 router.post('/shop', (req, res) => {
+    // console.log(req.body.shopData)
     var value = `null,'${req.body.shopData.shop_name}', '${req.body.shopData.shop_describe}', ${req.body.shopData.shop_price}, '${req.body.shopData.shop_img}', '${req.body.shopData.shop_unit}', 17, 0,${req.body.shopData.shop_original_cost}, ${req.body.shopData.shop_num_new}`
     var sql = `INSERT INTO shop VALUES (${value})`
     db.query(sql, (err, data) => {
-        db.query('select max(id) maxId from shop ', (err1, data1) => {
-            if (err1) {
-                res.json({
-                    'ok': 0,
-                    'error': err1
-                })
-                return
-            } else {
-                res.json({
-                    'ok': 1,
-                    'data': data1
-                })
+        if (err) {
+            res.json({
+                'ok': 0,
+                'error': err
+            })
+            return
+        } else {
+            // console.log(data.insertId)
+            if (req.body.shopData.shop_imgList) {
+                req.body.shopData.shop_imgList.forEach(item => {
+                    db.query("INSERT INTO shopimg VALUE(?,?,?)", [null, data.insertId, item], (error, data2) => {
+                        if (error) {
+                            return res.json({
+                                'ok': 0,
+                                'error': error
+                            })
+                        }
+                    })
+                });
             }
-        })
+
+            res.json({
+                'ok': 1,
+                'data': data.insertId
+            })
+        }
+
     })
 })
+
 
 
 module.exports = router;
