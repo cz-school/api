@@ -213,6 +213,7 @@ router.put('/esclassify/:id(\\d+)', (req, res) => {
 
 // 商品列表
 router.get('/shop/:id', (req, res) => {
+    // console.log(req.query);
     let pagesize = req.query.pagesize || 10;
     let pagenum = req.query.pagenum || 1;
     let pageindex = (pagenum - 1) * pagesize;
