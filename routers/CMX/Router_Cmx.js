@@ -239,8 +239,7 @@ router.get('/selfInfo/:id(\\d+)', (req, res) => {
 // 更新用户更改信息
 router.put('/update_info/:id(\\d+)', (req, res) => {
     let id = req.params.id
-    let data = req.body.data
-    console.log(data)
+    let data = JSON.parse(req.body.info)
     let sql = 'update users set `username` =?,`head_img`=?,sex=?,`school`=?,`birthday`=?,sign=? where id=?'
     conn.query(sql, [data.username, data.head_img, data.sex, data.school, data.birthday, data.sign, id], (error, data) => {
         if (error) {
