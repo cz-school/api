@@ -86,7 +86,7 @@ router.post('/addSite', (req, res) => {
 router.get('/siteShow', (req, res) => {
     // let userId = req.body.id || 1
     let id = req.query.id
-    // console.log(id)
+    console.log(id)
     conn.query('select * from address where id = ?', id, (error, data) => {
         if (error) {
             res.json({
