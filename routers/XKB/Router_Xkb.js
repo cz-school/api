@@ -190,4 +190,54 @@ router.delete('/deleteSite',(req,res) => {
     })
 })
 
+
+// 修改订单状态 whl 写
+
+// 根据商家id显示订单状态 whl 写
+router.get('/showTableData',(req,res)=>{
+    let id =req.query.id;
+    let state = req.query.state;
+    let sql = 'select * from `order` where state = ? and id in   (select order_id from order_stdetail where menu_id in  (select menu_id from win_menu where user_id in (?)) )'
+    conn.query(sql,[state,id],(error,data)=>{
+        if(error) {
+            res.json({
+                'ok':0,
+                'error':error
+            })
+            return console.log(error);
+        }
+        else{
+            res.json({
+                'ok':1,
+                'msg':'查询订单成功',
+                data:data
+            })
+        }
+    })
+})
+
+// 修改发货状态 whl 写 /70/1
+router.put('/affirmState/:id(\\d+)',(req,res)=>{
+    let id = req.params.id;
+    let state = {
+        state:req.body.data.active-0+1
+    }
+    let sql = 'update `order` set ? where id = ?'
+    conn.query(sql,[state,id],(error,data)=>{
+        if(error) {
+            res.json({
+                'ok':0,
+                'error':error
+            })
+            return console.log(error);
+        }
+        else{
+            res.json({
+                'ok':1,
+                'msg':'修改状态成功',
+                data:data
+            })
+        }
+    })
+})
 module.exports = router;
