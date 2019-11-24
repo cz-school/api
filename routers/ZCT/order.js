@@ -123,6 +123,27 @@ router.put("/order_st/refund/:id", (req, res) => {
   })
 })
 
+// 取消退款
+router.put("/order_st/unrefund/:id", (req, res) => {
+  console.log(1)
+  let id = req.params.id;
+  let order_type = req.body.type
+  let sql = 'UPDATE `order` SET return_state = ? WHERE id =?'
+  db.query(sql, [order_type, id], (error, data) => {
+    if (error) {
+      console.log(error)
+      return res.json({
+        ok: 0,
+        error: error
+      })
+    } else {
+      res.json({
+        ok: 1
+      })
+    }
+  })
+})
+
 // 准备创建订单 查询商品信息
 router.get("/purchase/:id", (req, res) => {
   let ids = req.params.id.split(",")
