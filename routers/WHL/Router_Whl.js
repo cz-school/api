@@ -811,8 +811,8 @@ router.get('/classify_st_ht', (req, res) => {
     let order = `order by a.id asc `
     let limit = ` limit ${pageindex}, ${pagesize} `;
 
-    let sql = `select count(*) as total  from stclassify a, win_menu b where b.stclassify_id=a.id And user_id = ${users_id}; 
-    select * from stclassify a, win_menu b ${where} ${order} ${limit}`;
+    let sql = `select count(*) as total  from stclassify a, win_menu b where b.stclassify_id=a.id And user_id = ${users_id} group by stclassify_id; 
+    select * from stclassify a, win_menu b ${where} group by stclassify_id ${order} ${limit}`;
     conn.query(sql, (error, data) => {
         if (error) {
             res.json({

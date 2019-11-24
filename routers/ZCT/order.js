@@ -60,7 +60,7 @@ router.get("/order_st/:state", (req, res) => {
 // 删除订单
 router.delete("/order_st/:id", (req, res) => {
   let id = req.params.id
-  console.log(id)
+  // console.log(id)
   let sql = 'DELETE FROM `order` WHERE  id = ?;DELETE FROM order_stdetail WHERE order_id = ?'
   db.query(sql, [id, id], (error, data) => {
     if (error) {
@@ -125,7 +125,6 @@ router.put("/order_st/refund/:id", (req, res) => {
 
 // 取消退款
 router.put("/order_st/unrefund/:id", (req, res) => {
-  console.log(1)
   let id = req.params.id;
   let order_type = req.body.type
   let sql = 'UPDATE `order` SET return_state = ? WHERE id =?'
@@ -174,7 +173,7 @@ router.post('/createorder_st', (req, res) => {
   let time = Date.parse(new Date()) / 1000;
   // 商品id
   let goodsdata = req.body.data.goodsdata
-  console.log(goodsdata)
+  // console.log(goodsdata)
   // 支付金额
   let price = req.body.data.totalPrice
   // 用户id
@@ -197,7 +196,7 @@ router.post('/createorder_st', (req, res) => {
   // console.log(arr)
   db.query('insert into `order`(order_num,add_time,price,state,user_id,classify_State,return_state,pay_method,shr_name,shr_mobile,shr_address) values(?)', [arr], (error, data) => {
     if (error) {
-      // console.log(error)
+      console.log(error)
       return res.json({
         ok: 0,
         msg: "生成订单失败"
@@ -240,10 +239,11 @@ router.post('/createorder_st', (req, res) => {
               ok: 0,
               msg: "创建失败"
             })
-          } else {
+          } else {  
+            // console.log(data)
             res.json({
               ok: 1,
-              id:data[0].insertId,
+              id:data.insertId,
               msg: "创建成功"
             })
           }
